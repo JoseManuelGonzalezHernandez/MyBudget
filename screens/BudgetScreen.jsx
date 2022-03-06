@@ -99,11 +99,9 @@ const MovementScreen = () => {
         historyTransactions = (
             <View style={styles.listContainer}>
                 <FlatList data={history} renderItem={historyData => (
-                    <View>
-                        <Card style={styles.summaryContainer}>
-                            <Text key={historyData.item.key}> {historyData.item.value} </Text>
-                        </Card>
-                    </View>
+                    <Card style={styles.summaryContainer}>
+                        <Text key={historyData.item.key}> {historyData.item.value} </Text>
+                    </Card>
                 )} />
             </View>
         )
@@ -165,12 +163,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         backgroundColor: "red"
     },
-	listContainer: {
-		width: "100%",
-		height: "100%",
-		padding: 30,
-        margin: 0
-	}
+    listContainer: {
+        width: "100%",
+        height: "80%",
+        padding: 30,
+        marginLeft: 70
+    }
 })
 
 export default MovementScreen

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
     Alert,
     Button,
+    FlatList,
     Keyboard,
     StyleSheet,
     Text,
@@ -16,8 +17,10 @@ import BudgetContainer from '../components/BudgetContainer';
 const MovementScreen = () => {
 
     const [budget, setBudget] = useState(0);
+    const [history, setHistory] = useState([])
     const [movement, setMovement] = useState(0);
     const [description, setDescription] = useState("");
+    const [transactionDone, setTransactionDone] = useState(false);
 
     const budgetInputHandler = inputText => {
         setMovement(inputText.replace(/[^0-9]/g, ""));
@@ -41,8 +44,13 @@ const MovementScreen = () => {
             ]);
         } else {
             setBudget(parseInt(budget) + parseInt(movement));
+            let value = "Deposit: " + description + " -> " + movement + " €.\n";
+            setHistory((currentHistory) => [
+                ...currentHistory,
+                { key: Math.random().toString(), value: value }]);
             resetInputHandler();
             resetDescriptionHandler();
+            setTransactionDone(true);
         }
 
     }
@@ -54,8 +62,13 @@ const MovementScreen = () => {
             ]);
         } else {
             setBudget(parseInt(budget) - parseInt(movement));
+            let value = "Withdrawal: " + description + " -> -" + movement + " €.\n";
+            setHistory((currentHistory) => [
+                ...currentHistory,
+                { key: Math.random().toString(), value: value }]);
             resetInputHandler();
             resetDescriptionHandler();
+            setTransactionDone(true);
         }
 
 
@@ -81,6 +94,22 @@ const MovementScreen = () => {
         )
     }
 
+    let historyTransactions;
+    if (transactionDone) {
+        historyTransactions = (
+            <View style={styles.listContainer}>
+                <FlatList data={history} renderItem={historyData => (
+                    <View>
+                        <Card style={styles.summaryContainer}>
+                            <Text key={historyData.item.key}> {historyData.item.value} </Text>
+                        </Card>
+                    </View>
+                )} />
+            </View>
+        )
+
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
 
@@ -102,6 +131,7 @@ const MovementScreen = () => {
                         </View>
                     </View>
                 </Card>
+                {historyTransactions}
             </View>
         </TouchableWithoutFeedback>
 
@@ -134,7 +164,13 @@ const styles = StyleSheet.create({
     summaryContainerInNumbersRed: {
         marginBottom: 20,
         backgroundColor: "red"
-    }
+    },
+	listContainer: {
+		width: "100%",
+		height: "100%",
+		padding: 30,
+        margin: 0
+	}
 })
 
 export default MovementScreen
